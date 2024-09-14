@@ -1,0 +1,9 @@
+# Existing rules
+/frontend/node_modules/
+/backend/node_modules/
+frontend/node_modules/.cache
+
+# Additional rules to be safe
+node_modules
+.cache
+*.pack
