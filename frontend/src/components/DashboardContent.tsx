@@ -13,6 +13,7 @@ import ProductionEfficiencyDashboard from "./ProductionEfficiencyDashboard";
 import ProductionVolumesDashboard from "./ProductionVolumesDashboard";
 import ProductivityByEmployeeReport from "./ProductivityByEmployeeReport";
 import TodaysTimeclocks from "./reports/TodaysTimeclocks";
+import WeeklyTimecards from "./reports/WeeklyTimecards";
 
 const DashboardContent: React.FC = () => {
   return (
@@ -43,6 +44,7 @@ const DashboardContent: React.FC = () => {
         element={<ProductivityByEmployeeReport />}
       />
       <Route path="/reports/todays-timeclocks" element={<TodaysTimeclocks />} />
+      <Route path="/reports/weekly-timecards" element={<WeeklyTimecards />} />
     </Routes>
   );
 };

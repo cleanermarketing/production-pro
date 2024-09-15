@@ -179,4 +179,78 @@ router.get("/todaysTimeclocks", async (req, res) => {
   }
 });
 
+router.get("/weeklyTimecards", async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    const entries = await TimeclockEntry.find({
+      startTime: { $gte: start, $lte: end },
+    })
+      .populate("userId")
+      .populate("jobTypeId");
+
+    const weeklyData = {};
+
+    entries.forEach((entry) => {
+      const userId = entry.userId._id.toString();
+      const day = entry.startTime.toISOString().split("T")[0];
+      const duration =
+        (entry.endTime ? entry.endTime - entry.startTime : 0) /
+        (1000 * 60 * 60);
+
+      if (!weeklyData[userId]) {
+        weeklyData[userId] = {
+          user: {
+            _id: entry.userId._id,
+            firstName: entry.userId.firstName,
+            lastName: entry.userId.lastName,
+          },
+          weekData: {},
+        };
+      }
+
+      if (!weeklyData[userId].weekData[day]) {
+        weeklyData[userId].weekData[day] = { paid: 0, unpaid: 0 };
+      }
+
+      if (entry.jobTypeId.paid) {
+        weeklyData[userId].weekData[day].paid += duration;
+      } else {
+        weeklyData[userId].weekData[day].unpaid += duration;
+      }
+    });
+
+    res.json(Object.values(weeklyData));
+  } catch (error) {
+    console.error("Error fetching weekly timecard data:", error);
+    res.status(500).json({ message: "Error fetching weekly timecard data" });
+  }
+});
+
+router.get("/dayEntries", async (req, res) => {
+  try {
+    const { userId, date } = req.query;
+    const startOfDay = new Date(date);
+    const endOfDay = new Date(date);
+    endOfDay.setDate(endOfDay.getDate() + 1);
+
+    const entries = await TimeclockEntry.find({
+      userId,
+      startTime: { $gte: startOfDay, $lt: endOfDay },
+    }).populate("jobTypeId");
+
+    const formattedEntries = entries.map((entry) => ({
+      entry: entry.toObject(),
+      jobType: entry.jobTypeId,
+    }));
+
+    res.json(formattedEntries);
+  } catch (error) {
+    console.error("Error fetching day entries:", error);
+    res.status(500).json({ message: "Error fetching day entries" });
+  }
+});
+
 module.exports = router;

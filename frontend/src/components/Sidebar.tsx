@@ -108,16 +108,33 @@ const Sidebar: React.FC = () => {
     {
       name: "Reporting",
       icon: FaChartBar,
-      path: "/dashboard/reporting",
       roles: ["manager", "admin"],
       subItems: [
         {
-          name: "Productivity by Employee",
-          path: "/dashboard/reporting/productivity-by-employee",
+          name: "Productivity",
+          subItems: [
+            {
+              name: "Productivity by Employee",
+              path: "/dashboard/reporting/productivity-by-employee",
+            },
+          ],
         },
         {
-          name: "Today's Timeclocks",
-          path: "/dashboard/reports/todays-timeclocks",
+          name: "Financial",
+          subItems: [],
+        },
+        {
+          name: "Time",
+          subItems: [
+            {
+              name: "Today's Timeclocks",
+              path: "/dashboard/reports/todays-timeclocks",
+            },
+            {
+              name: "Weekly Timecards",
+              path: "/dashboard/reports/weekly-timecards",
+            },
+          ],
         },
       ],
     },

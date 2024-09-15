@@ -107,4 +107,25 @@ router.get("/session-stats/:userId", async (req, res) => {
   }
 });
 
+// Update Timeclock Entries
+router.put("/update/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { entries } = req.body;
+
+    for (let entry of entries) {
+      await TimeclockEntry.findByIdAndUpdate(entry.entry._id, {
+        startTime: entry.entry.startTime,
+        endTime: entry.entry.endTime,
+        jobTypeId: entry.jobType._id,
+      });
+    }
+
+    res.json({ message: "Timeclock entries updated successfully" });
+  } catch (error) {
+    console.error("Error updating timeclock entries:", error);
+    res.status(500).json({ message: "Error updating timeclock entries" });
+  }
+});
+
 module.exports = router;

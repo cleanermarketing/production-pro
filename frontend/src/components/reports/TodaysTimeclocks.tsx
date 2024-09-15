@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import EditTimeclockModal from "../EditTimeclockModal";
 
 interface TimeclockEntry {
   _id: string;
@@ -36,12 +37,18 @@ const TodaysTimeclocks: React.FC = () => {
   const [timeclockData, setTimeclockData] = useState<TimeclockData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [editingUserId, setEditingUserId] = useState<string | null>(null);
+  const [allJobTypes, setAllJobTypes] = useState<JobType[]>([]);
 
   useEffect(() => {
     if (selectedDate) {
       fetchTimeclockData();
     }
   }, [selectedDate]);
+
+  useEffect(() => {
+    fetchJobTypes();
+  }, []);
 
   const fetchTimeclockData = async () => {
     if (!selectedDate) return;
@@ -61,6 +68,15 @@ const TodaysTimeclocks: React.FC = () => {
       console.error(err);
     }
     setIsLoading(false);
+  };
+
+  const fetchJobTypes = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/jobTypes");
+      setAllJobTypes(response.data);
+    } catch (error) {
+      console.error("Error fetching job types:", error);
+    }
   };
 
   const calculateDuration = (start: Date, end: Date | null): string => {
@@ -86,6 +102,39 @@ const TodaysTimeclocks: React.FC = () => {
     return `${hours}:${minutes.toString().padStart(2, "0")}`;
   };
 
+  const handleEditClick = (userId: string) => {
+    setEditingUserId(userId);
+  };
+
+  const handleCloseEdit = () => {
+    setEditingUserId(null);
+  };
+
+  const handleSaveEdit = async (
+    userId: string,
+    updatedEntries: Array<{ entry: TimeclockEntry; jobType: JobType }>
+  ) => {
+    try {
+      await axios.put(`http://localhost:5000/api/timeclock/update/${userId}`, {
+        entries: updatedEntries,
+      });
+      fetchTimeclockData(); // Refetch data after update
+      setEditingUserId(null);
+    } catch (error) {
+      console.error("Error updating timeclock entries:", error);
+      // Handle error (e.g., show error message to user)
+    }
+  };
+
+  // Add this new function to format time
+  const formatTime = (date: Date | null): string => {
+    if (!date) return "N/A";
+    return new Date(date).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Today's Timeclocks</h1>
@@ -106,7 +155,10 @@ const TodaysTimeclocks: React.FC = () => {
           >
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">{`${userData.user.firstName} ${userData.user.lastName}`}</h2>
-              <button className="bg-blue-500 text-white px-4 py-2 rounded">
+              <button
+                onClick={() => handleEditClick(userData.user._id)}
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+              >
                 Edit
               </button>
             </div>
@@ -122,14 +174,8 @@ const TodaysTimeclocks: React.FC = () => {
               <tbody>
                 {userData.entries.map((entry) => (
                   <tr key={entry.entry._id}>
-                    <td>
-                      {new Date(entry.entry.startTime).toLocaleTimeString()}
-                    </td>
-                    <td>
-                      {entry.entry.endTime
-                        ? new Date(entry.entry.endTime).toLocaleTimeString()
-                        : "N/A"}
-                    </td>
+                    <td>{formatTime(entry.entry.startTime)}</td>
+                    <td>{formatTime(entry.entry.endTime)}</td>
                     <td>{entry.jobType.name}</td>
                     <td>
                       {calculateDuration(
@@ -180,6 +226,20 @@ const TodaysTimeclocks: React.FC = () => {
           </div>
         ))}
       </div>
+      {editingUserId && (
+        <EditTimeclockModal
+          isOpen={!!editingUserId}
+          onClose={handleCloseEdit}
+          entries={
+            timeclockData.find((data) => data.user._id === editingUserId)
+              ?.entries || []
+          }
+          onSave={(updatedEntries) =>
+            handleSaveEdit(editingUserId, updatedEntries)
+          }
+          allJobTypes={allJobTypes}
+        />
+      )}
     </div>
   );
 };
