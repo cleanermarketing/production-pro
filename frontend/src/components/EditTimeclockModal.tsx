@@ -40,6 +40,7 @@ const EditTimeclockModal: React.FC<EditTimeclockModalProps> = ({
 
   useEffect(() => {
     setEditedEntries(entries);
+    console.log("Entries in modal:", entries); // Debug log
   }, [entries]);
 
   const handleInputChange = (
@@ -134,7 +135,7 @@ const EditTimeclockModal: React.FC<EditTimeclockModalProps> = ({
                   </td>
                   <td className="border border-gray-300 px-4 py-2">
                     <select
-                      value={entry.entry.jobTypeId}
+                      value={entry.jobType._id}
                       onChange={(e) =>
                         handleInputChange(index, "jobTypeId", e.target.value)
                       }

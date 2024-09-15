@@ -142,6 +142,7 @@ const WeeklyTimecards: React.FC = () => {
         }
       );
       setDayEntries(response.data);
+      console.log("Fetched day entries:", response.data); // Add this line for debugging
     } catch (error) {
       console.error("Error fetching day entries:", error);
     }
