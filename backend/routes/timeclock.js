@@ -34,12 +34,14 @@ router.post("/clockin", async (req, res) => {
 // Clock Out
 router.put("/clockout/:entryId", async (req, res) => {
   try {
+    const { clockOutReason } = req.body;
     const entry = await TimeclockEntry.findById(req.params.entryId);
     if (!entry) {
       return res.status(404).json({ message: "Entry not found" });
     }
     entry.endTime = new Date();
     entry.totalHours = (entry.endTime - entry.startTime) / (1000 * 60 * 60);
+    entry.clockOutReason = clockOutReason;
     await entry.save();
     res.json(entry);
   } catch (error) {

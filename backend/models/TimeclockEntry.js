@@ -21,6 +21,10 @@ const TimeclockEntrySchema = new mongoose.Schema({
   totalHours: {
     type: Number,
   },
+  clockOutReason: {
+    type: String,
+    enum: ["End Shift", "Change Jobs", "Break", "Ran Out Of Pieces"],
+  },
 });
 
 module.exports = mongoose.model("TimeclockEntry", TimeclockEntrySchema);

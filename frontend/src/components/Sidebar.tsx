@@ -11,13 +11,25 @@ import {
   FaHome,
 } from "react-icons/fa";
 import logo from "../logowhite.svg";
+import { useUser } from "../UserContext"; // Import useUser hook
 
 const Sidebar: React.FC = () => {
   const [user] = useState(JSON.parse(localStorage.getItem("user") || "{}"));
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const navigate = useNavigate();
+  const { isClockedIn } = useUser(); // Use the isClockedIn state from UserContext
 
   const handleLogout = () => {
+    if (isClockedIn) {
+      const confirmLogout = window.confirm(
+        "You are still clocked in. Are you sure you want to log out?"
+      );
+      if (!confirmLogout) {
+        return; // If user selects "No", do nothing and return
+      }
+    }
+
+    // If user is not clocked in or selects "Yes", proceed with logout
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/");

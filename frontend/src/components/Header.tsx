@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useUser } from "../UserContext";
+import ClockOutReasonModal from "./ClockOutReasonModal";
 
 interface JobType {
   _id: string;
@@ -20,6 +21,7 @@ const Header: React.FC = () => {
   const [currentEntry, setCurrentEntry] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const { isClockedIn, setIsClockedIn, setItemsPressed } = useUser();
+  const [showClockOutModal, setShowClockOutModal] = useState(false);
 
   useEffect(() => {
     fetchJobTypes();
@@ -113,23 +115,33 @@ const Header: React.FC = () => {
     }
   };
 
-  const handleClockOut = async () => {
+  const handleClockOut = async (reason?: string) => {
     if (!currentEntry) {
       console.error("No current entry to clock out from");
       return;
     }
+    if (!reason) {
+      setShowClockOutModal(true);
+      return;
+    }
     try {
       await axios.put(
-        `http://localhost:5000/api/timeclock/clockout/${currentEntry}`
+        `http://localhost:5000/api/timeclock/clockout/${currentEntry}`,
+        { clockOutReason: reason }
       );
       setIsClockedIn(false);
       setCurrentEntry(null);
       setSelectedJob("");
-      setItemsPressed(0); // Reset items pressed count to 0
+      setItemsPressed(0);
       console.log("User clocked out, isClockedIn set to false");
     } catch (error) {
       console.error("Error clocking out:", error);
     }
+  };
+
+  const handleClockOutConfirm = (reason: string) => {
+    setShowClockOutModal(false);
+    handleClockOut(reason);
   };
 
   return (
@@ -144,7 +156,7 @@ const Header: React.FC = () => {
                   You are clocked in
                 </span>
                 <button
-                  onClick={handleClockOut}
+                  onClick={() => handleClockOut()}
                   className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
                 >
                   Clock Out
@@ -179,6 +191,11 @@ const Header: React.FC = () => {
           </>
         )}
       </div>
+      <ClockOutReasonModal
+        isOpen={showClockOutModal}
+        onClose={() => setShowClockOutModal(false)}
+        onConfirm={handleClockOutConfirm}
+      />
     </header>
   );
 };
