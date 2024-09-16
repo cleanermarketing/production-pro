@@ -104,10 +104,13 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm start",
+    "install:all": "npm install && cd frontend && npm install"
   },
   "keywords": [],
   "author": "",
