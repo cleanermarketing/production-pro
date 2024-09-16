@@ -60,7 +60,7 @@ const ProductionEfficiencyDashboard: React.FC = () => {
   useEffect(() => {
     fetchUsers();
 
-    ws.current = new WebSocket("ws://${process.env.WS_REACT_APP_API_URL}");
+    ws.current = new WebSocket(`${process.env.REACT_APP_WS_API_URL}`);
 
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);

@@ -69,11 +69,15 @@ const Production: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      const ws = new WebSocket(`${process.env.WS_REACT_APP_API_URL}`);
+      const ws = new WebSocket(`${process.env.REACT_APP_WS_API_URL}`);
 
       ws.onopen = () => {
         console.log("WebSocket connected");
         ws.send(JSON.stringify({ type: "subscribe", userId: user.id }));
+      };
+
+      ws.onerror = (error) => {
+        console.error("WebSocket error:", error);
       };
 
       ws.onmessage = (event) => {

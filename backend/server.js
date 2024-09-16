@@ -21,23 +21,7 @@ mongoose.connect(process.env.MONGO_URI, {
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
-
-// Configure CORS before defining any routes
 app.use(cors());
-
-// If the above doesn't work, try this more specific configuration:
-/*
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-  preflightContinue: false,
-  optionsSuccessStatus: 204
-}));
-*/
-
-// Add this line after your CORS configuration
 app.options('*', cors());
 
 // Set up WebSocket
@@ -117,8 +101,10 @@ app.get("/test", (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
+
 mongoose.connection.once('open', () => {
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
 });
+
