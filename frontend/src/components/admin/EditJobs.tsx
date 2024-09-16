@@ -24,7 +24,9 @@ const EditJobs: React.FC = () => {
 
   const fetchJobs = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/jobTypes");
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/jobTypes`
+      );
       setJobs(response.data);
     } catch (error) {
       console.error("Error fetching jobs:", error);
@@ -41,7 +43,7 @@ const EditJobs: React.FC = () => {
 
   const handleUpdate = async (id: string) => {
     try {
-      await axios.put(`http://localhost:5000/api/jobTypes/${id}`, {
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/jobTypes/${id}`, {
         name: editName,
         expectedPPOH: parseFloat(editPPOH),
         paid: editPaid,
@@ -57,7 +59,9 @@ const EditJobs: React.FC = () => {
   const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this job?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/jobTypes/${id}`);
+        await axios.delete(
+          `${process.env.REACT_APP_API_URL}/api/jobTypes/${id}`
+        );
         fetchJobs();
       } catch (error) {
         console.error("Error deleting job:", error);

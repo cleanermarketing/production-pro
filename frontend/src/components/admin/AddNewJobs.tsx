@@ -17,12 +17,15 @@ const AddNewJobs: React.FC = () => {
     setSuccess("");
 
     try {
-      const response = await axios.post("http://localhost:5000/api/jobTypes", {
-        name: jobName,
-        expectedPPOH: parseFloat(expectedPPOH),
-        paid,
-        department,
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/jobTypes`,
+        {
+          name: jobName,
+          expectedPPOH: parseFloat(expectedPPOH),
+          paid,
+          department,
+        }
+      );
 
       if (response.status === 201) {
         setSuccess("Job Successfully Added");

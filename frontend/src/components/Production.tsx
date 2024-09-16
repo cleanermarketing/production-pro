@@ -40,7 +40,7 @@ const Production: React.FC = () => {
     if (!user) return;
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/stats/today?userId=${user.id}`
+        `${process.env.REACT_APP_API_URL}/api/stats/today?userId=${user.id}`
       );
       setHoursWorked(response.data.hoursWorked);
       setItemsPressed(response.data.itemsPressed);
@@ -69,7 +69,7 @@ const Production: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      const ws = new WebSocket("ws://localhost:5000");
+      const ws = new WebSocket(`${process.env.WS_REACT_APP_API_URL}`);
 
       ws.onopen = () => {
         console.log("WebSocket connected");
@@ -112,7 +112,7 @@ const Production: React.FC = () => {
     try {
       console.log("Fetching current job for user:", userId);
       const response = await axios.get(
-        `http://localhost:5000/api/timeclock/current?userId=${userId}`
+        `${process.env.REACT_APP_API_URL}/api/timeclock/current?userId=${userId}`
       );
       console.log("Current job response:", response.data);
       if (
@@ -139,9 +139,11 @@ const Production: React.FC = () => {
     if (!user) return;
     try {
       const [efficiencyResponse, ppohResponse] = await Promise.all([
-        axios.get(`http://localhost:5000/api/stats/efficiency/${user.id}`),
         axios.get(
-          `http://localhost:5000/api/timeclock/session-stats/${user.id}`
+          `${process.env.REACT_APP_API_URL}/api/stats/efficiency/${user.id}`
+        ),
+        axios.get(
+          `${process.env.REACT_APP_API_URL}/api/timeclock/session-stats/${user.id}`
         ),
       ]);
       setEfficiency(Math.round(efficiencyResponse.data.efficiency));
@@ -162,7 +164,7 @@ const Production: React.FC = () => {
     if (!user) return;
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/stats/session?userId=${user.id}`
+        `${process.env.REACT_APP_API_URL}/api/stats/session?userId=${user.id}`
       );
       setSessionItemsProcessed(response.data.itemsProcessedThisSession);
     } catch (error) {
@@ -193,7 +195,7 @@ const Production: React.FC = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/production",
+        `${process.env.REACT_APP_API_URL}/api/production`,
         {
           userId: user.id,
           jobId: currentJob._id,

@@ -48,7 +48,7 @@ const ProductionEfficiencyDashboard: React.FC = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/stats/users/today"
+        `${process.env.REACT_APP_API_URL}/api/stats/users/today`
       );
       console.log("Fetched users:", response.data);
       setUsers(response.data);
@@ -60,7 +60,7 @@ const ProductionEfficiencyDashboard: React.FC = () => {
   useEffect(() => {
     fetchUsers();
 
-    ws.current = new WebSocket("ws://localhost:5000");
+    ws.current = new WebSocket("ws://${process.env.WS_REACT_APP_API_URL}");
 
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);

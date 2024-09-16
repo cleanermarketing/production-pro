@@ -30,7 +30,9 @@ const EditUsers: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/users");
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/users`
+      );
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -60,7 +62,10 @@ const EditUsers: React.FC = () => {
         payType: editPayType || undefined, // Send undefined if empty string
       };
 
-      await axios.put(`http://localhost:5000/api/users/${id}`, updatedUser);
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/users/${id}`,
+        updatedUser
+      );
       setEditingId(null);
       fetchUsers();
     } catch (error) {
@@ -71,7 +76,7 @@ const EditUsers: React.FC = () => {
   const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/users/${id}`);
+        await axios.delete(`${process.env.REACT_APP_API_URL}/api/users/${id}`);
         fetchUsers();
       } catch (error) {
         console.error("Error deleting user:", error);

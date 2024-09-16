@@ -35,7 +35,7 @@ const Header: React.FC = () => {
   const fetchJobTypes = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/timeclock/jobtypes"
+        `${process.env.REACT_APP_API_URL}/api/timeclock/jobtypes`
       );
       setJobTypes(response.data);
     } catch (error) {
@@ -50,7 +50,7 @@ const Header: React.FC = () => {
       try {
         console.log("Checking clock status for user:", user.id);
         const response = await axios.get(
-          `http://localhost:5000/api/timeclock/current?userId=${user.id}`
+          `${process.env.REACT_APP_API_URL}/api/timeclock/current?userId=${user.id}`
         );
         console.log("Clock status response:", response.data);
         if (response.data && response.data.currentEntry) {
@@ -78,7 +78,7 @@ const Header: React.FC = () => {
     if (!user) return;
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/timeclock/current?userId=${user.id}`
+        `${process.env.REACT_APP_API_URL}/api/timeclock/current?userId=${user.id}`
       );
       if (response.data && response.data.jobType) {
         setSelectedJob(response.data.jobType._id);
@@ -96,7 +96,7 @@ const Header: React.FC = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/timeclock/clockin",
+        `${process.env.REACT_APP_API_URL}/api/timeclock/clockin`,
         {
           userId: user.id,
           jobTypeId: selectedJob,
@@ -126,7 +126,7 @@ const Header: React.FC = () => {
     }
     try {
       await axios.put(
-        `http://localhost:5000/api/timeclock/clockout/${currentEntry}`,
+        `${process.env.REACT_APP_API_URL}/api/timeclock/clockout/${currentEntry}`,
         { clockOutReason: reason }
       );
       setIsClockedIn(false);

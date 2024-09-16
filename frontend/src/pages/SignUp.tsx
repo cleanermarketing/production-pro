@@ -16,13 +16,16 @@ const SignUp = () => {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:5000/api/users", {
-        firstName,
-        lastName,
-        username,
-        password,
-        role: "employee", // Default role
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/users`,
+        {
+          firstName,
+          lastName,
+          username,
+          password,
+          role: "employee", // Default role
+        }
+      );
 
       if (response.status === 201) {
         navigate("/dashboard/production"); // Redirect to Production page after successful signup

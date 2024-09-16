@@ -12,10 +12,13 @@ export default function SignIn() {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:5000/auth/login", {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/auth/login`,
+        {
+          username,
+          password,
+        }
+      );
 
       console.log("Login response:", response.data);
 
@@ -27,7 +30,7 @@ export default function SignIn() {
         // Fetch overall stats after successful login
         try {
           const statsResponse = await axios.get(
-            `http://localhost:5000/api/stats/overall?userId=${response.data.user.id}`
+            `${process.env.REACT_APP_API_URL}/api/stats/overall?userId=${response.data.user.id}`
           );
           const itemsPressed = statsResponse.data.itemsPressed;
           console.log("Items pressed:", itemsPressed);

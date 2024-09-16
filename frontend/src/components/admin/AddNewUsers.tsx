@@ -19,16 +19,19 @@ const AddNewUsers: React.FC = () => {
     setSuccess("");
 
     try {
-      const response = await axios.post("http://localhost:5000/api/users", {
-        firstName,
-        lastName,
-        username,
-        password,
-        role,
-        payRate: parseFloat(payRate),
-        payType,
-        department,
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/users`,
+        {
+          firstName,
+          lastName,
+          username,
+          password,
+          role,
+          payRate: parseFloat(payRate),
+          payType,
+          department,
+        }
+      );
 
       if (response.status === 201) {
         setSuccess("Employee successfully added");

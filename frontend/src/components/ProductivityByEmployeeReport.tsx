@@ -48,7 +48,7 @@ const ProductivityByEmployeeReport: React.FC = () => {
 
       const [productivityResponse, jobTypesResponse] = await Promise.all([
         axios.get(
-          "http://localhost:5000/api/reports/productivity-by-employee",
+          `${process.env.REACT_APP_API_URL}/api/reports/productivity-by-employee`,
           {
             params: {
               startDate: startOfDay.toISOString(),
@@ -56,7 +56,9 @@ const ProductivityByEmployeeReport: React.FC = () => {
             },
           }
         ),
-        axios.get("http://localhost:5000/api/jobTypes/with-ppoh-goals"),
+        axios.get(
+          `${process.env.REACT_APP_API_URL}/api/jobTypes/with-ppoh-goals`
+        ),
       ]);
 
       const productivityData = productivityResponse.data;
