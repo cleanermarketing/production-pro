@@ -139,6 +139,7 @@ const EditJobs: React.FC = () => {
                       <option value="Assembly">Assembly</option>
                       <option value="Wash & Fold">Wash & Fold</option>
                       <option value="Cleaning">Cleaning</option>
+                      <option value="Unpaid">Unpaid</option>
                     </select>
                   ) : (
                     job.department

@@ -122,6 +122,8 @@ const AddNewJobs: React.FC = () => {
               <option value="Assembly">Assembly</option>
               <option value="Wash & Fold">Wash & Fold</option>
               <option value="Cleaning">Cleaning</option>
+              <option value="Unpaid">Unpaid</option>
+
             </select>
           </div>
           {error && <p className="text-red-500 text-xs italic mb-4">{error}</p>}
