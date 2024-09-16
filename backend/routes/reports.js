@@ -108,11 +108,23 @@ router.get("/productivity-by-employee", async (req, res) => {
           jobType: "$_id.jobTypeName",
           hoursWorked: 1,
           piecesCompleted: 1,
-          pph: { $divide: ["$piecesCompleted", "$hoursWorked"] },
-          efficiency: {
-            $divide: [
+          pph: {
+            $cond: [
+              { $eq: ["$hoursWorked", 0] },
+              0,
               { $divide: ["$piecesCompleted", "$hoursWorked"] },
-              "$jobType.expectedPPOH",
+            ],
+          },
+          efficiency: {
+            $cond: [
+              { $eq: ["$hoursWorked", 0] },
+              0,
+              {
+                $divide: [
+                  { $divide: ["$piecesCompleted", "$hoursWorked"] },
+                  "$jobType.expectedPPOH",
+                ],
+              },
             ],
           },
           goalReached: {
