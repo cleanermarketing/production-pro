@@ -1,5 +1,5 @@
 modules = ["nodejs-20"]
-run = "npm run start --prefix frontend"
+run = "npm run start"
 
 [[ports]]
 localPort = 3000
@@ -10,4 +10,4 @@ localPort = 5000
 externalPort = 5000
 
 [deployment]
-run = ["sh", "-c", "npm run start --prefix frontend"]
+run = ["sh", "-c", "npm run start"]
