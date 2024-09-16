@@ -13,21 +13,13 @@ router.post("/", async (req, res) => {
       username,
       password,
       role,
-      payRate,
-      department,
-      payType,
+      payRate = 14,
+      department = "Assembly",
+      payType = "Hourly",
     } = req.body;
 
     // Check if all required fields are present
-    if (
-      !firstName ||
-      !lastName ||
-      !username ||
-      !password ||
-      !payRate ||
-      !department ||
-      !payType
-    ) {
+    if (!firstName || !lastName || !username || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
