@@ -80,7 +80,7 @@ const WeeklyTimecards: React.FC = () => {
     setError(null);
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/reports/weeklyTimecards`,
+        `${process.env.REACT_APP_API_URL}/api/reports/weeklyTimecards`,
         {
           params: {
             startDate: start.toISOString(),
@@ -98,7 +98,7 @@ const WeeklyTimecards: React.FC = () => {
 
   const fetchJobTypes = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/jobTypes");
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/jobTypes`);
       setAllJobTypes(response.data);
     } catch (error) {
       console.error("Error fetching job types:", error);
@@ -133,7 +133,7 @@ const WeeklyTimecards: React.FC = () => {
   const fetchDayEntries = async (userId: string, day: string) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/reports/dayEntries`,
+        `${process.env.REACT_APP_API_URL}/api/reports/dayEntries`,
         {
           params: {
             userId,
@@ -158,7 +158,7 @@ const WeeklyTimecards: React.FC = () => {
     updatedEntries: Array<{ entry: TimeclockEntry; jobType: JobType }>
   ) => {
     try {
-      await axios.put(`http://localhost:5000/api/timeclock/update/${userId}`, {
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/timeclock/update/${userId}`, {
         entries: updatedEntries,
       });
       if (weekRange) {

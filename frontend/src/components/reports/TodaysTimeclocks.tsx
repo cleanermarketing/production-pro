@@ -56,23 +56,28 @@ const TodaysTimeclocks: React.FC = () => {
     setIsLoading(true);
     setError(null);
     try {
+      console.log('Fetching timeclock data...');
+      console.log('API URL:', `${process.env.REACT_APP_API_URL}/api/reports/todaysTimeclocks`);
+      console.log('Date:', selectedDate.toISOString());
       const response = await axios.get(
-        `http://localhost:5000/api/reports/todaysTimeclocks`,
+        `${process.env.REACT_APP_API_URL}/api/reports/todaysTimeclocks`,
         {
           params: { date: selectedDate.toISOString() },
         }
       );
+      console.log('Timeclock data response:', response.data);
       setTimeclockData(response.data);
-    } catch (err) {
+    } catch (err: any) {
+      console.error('Error fetching timeclock data:', err);
+      console.error('Error details:', err.response?.data || err.message);
       setError("Failed to fetch timeclock data");
-      console.error(err);
     }
     setIsLoading(false);
   };
 
   const fetchJobTypes = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/jobTypes");
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/jobTypes`);
       setAllJobTypes(response.data);
     } catch (error) {
       console.error("Error fetching job types:", error);
@@ -115,13 +120,18 @@ const TodaysTimeclocks: React.FC = () => {
     updatedEntries: Array<{ entry: TimeclockEntry; jobType: JobType }>
   ) => {
     try {
-      await axios.put(`http://localhost:5000/api/timeclock/update/${userId}`, {
+      console.log('Updating timeclock entries...');
+      console.log('API URL:', `${process.env.REACT_APP_API_URL}/api/timeclock/update/${userId}`);
+      console.log('Updated entries:', updatedEntries);
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/timeclock/update/${userId}`, {
         entries: updatedEntries,
       });
+      console.log('Timeclock entries updated successfully');
       fetchTimeclockData(); // Refetch data after update
       setEditingUserId(null);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating timeclock entries:", error);
+      console.error('Error details:', error.response?.data || error.message);
       // Handle error (e.g., show error message to user)
     }
   };
