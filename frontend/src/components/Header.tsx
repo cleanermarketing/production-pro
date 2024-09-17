@@ -153,7 +153,7 @@ const Header: React.FC = () => {
             {isClockedIn ? (
               <>
                 <span className="mr-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm">
-                  You are clocked in
+                  Clocked in
                 </span>
                 <button
                   onClick={() => handleClockOut()}
@@ -165,7 +165,7 @@ const Header: React.FC = () => {
             ) : (
               <>
                 <span className="mr-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm">
-                  You are not clocked in
+                  Not clocked in
                 </span>
                 <select
                   value={selectedJob}

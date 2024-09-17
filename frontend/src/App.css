@@ -40,3 +40,28 @@
 .flex-col {
   transition: background-color 0.5s ease;
 }
+
+@media (max-width: 768px) {
+  .md\:hidden {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .md\:flex {
+    display: flex;
+  }
+}
+
+/* Add these styles at the end of the file */
+.mobile-menu-button {
+  z-index: 60;
+}
+
+.mobile-menu {
+  z-index: 55;
+}
+
+.header {
+  z-index: 50;
+}

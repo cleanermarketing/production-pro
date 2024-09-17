@@ -218,6 +218,7 @@ const EditUsers: React.FC = () => {
                       <option value="Assembly">Assembly</option>
                       <option value="Wash & Fold">Wash & Fold</option>
                       <option value="Cleaning">Cleaning</option>
+                      <option value="Management">Management</option>
                     </select>
                   ) : (
                     user.department

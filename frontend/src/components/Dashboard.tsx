@@ -5,7 +5,7 @@ import DashboardContent from "./DashboardContent";
 
 const Dashboard: React.FC = () => {
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex flex-col h-screen overflow-hidden md:flex-row">
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Header />
