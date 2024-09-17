@@ -4,8 +4,8 @@ import logo from "../logo.svg";
 
 const Home = () => {
   return (
-    <div className="flex h-screen">
-      <div className="w-1/2 flex flex-col items-center justify-center bg-gray-100">
+    <div className="flex h-screen items-center justify-center bg-gray-100">
+      <div className="flex flex-col items-center">
         <img src={logo} alt="Company Logo" className="w-64 mb-8" />
         <div className="space-y-4">
           <Link
@@ -22,7 +22,6 @@ const Home = () => {
           </Link>
         </div>
       </div>
-      <div className="w-1/2 bg-white">{/* Right side content */}</div>
     </div>
   );
 };
