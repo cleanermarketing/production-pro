@@ -56,8 +56,11 @@ export default function EfficiencyMeter({
 
   onColorChange(color);
 
+  const fontSize = size / 4; // Adjust this value to change the text size relative to the circle
+  const smallFontSize = fontSize / 2.5; // Adjust this value for the smaller text
+
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="relative" style={{ width: size, height: size }}>
       <svg height={size} width={size} className="transform -rotate-90">
         <circle
           stroke="#e6e6e6"
@@ -92,13 +95,26 @@ export default function EfficiencyMeter({
         )}
       </svg>
       <div
-        className="absolute flex flex-col items-center justify-center"
-        style={{ width: size, height: size }}
+        className="absolute inset-0 flex flex-col items-center justify-center"
       >
-        <span className={`text-4xl font-bold`} style={{ color }}>
+        <span
+          className="font-bold"
+          style={{
+            color,
+            fontSize: `${fontSize}px`,
+            lineHeight: 1,
+          }}
+        >
           {efficiency}%
         </span>
-        <span className={`text-sm mt-2`} style={{ color }}>
+        <span
+          style={{
+            color,
+            fontSize: `${smallFontSize}px`,
+            lineHeight: 1,
+            marginTop: `${fontSize / 8}px`,
+          }}
+        >
           {text}
         </span>
       </div>

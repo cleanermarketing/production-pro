@@ -18,15 +18,13 @@ const UserEfficiencyCard: React.FC<User> = ({
 }) => {
   const roundedEfficiency = Math.round(efficiency);
 
-  console.log(`User ${firstName} ${lastName} isClockedIn:`, isClockedIn);
-
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 m-4">
-      <h3 className="text-xl font-semibold mb-4">
+    <div className="bg-white shadow-lg rounded-lg p-4 m-2 flex flex-col items-center">
+      <h3 className="text-lg font-semibold mb-2 text-center">
         {firstName} {lastName}
       </h3>
       <div
-        className={`text-sm font-bold mb-4 p-2 rounded-full text-center ${
+        className={`text-xs font-bold mb-2 p-1 rounded-full text-center w-full ${
           isClockedIn ? "bg-green-500 text-white" : "bg-red-500 text-white"
         }`}
       >
@@ -34,7 +32,7 @@ const UserEfficiencyCard: React.FC<User> = ({
       </div>
       <EfficiencyMeter
         efficiency={roundedEfficiency}
-        size={150}
+        size={100}
         onColorChange={() => {}}
       />
     </div>
@@ -80,11 +78,11 @@ const ProductionEfficiencyDashboard: React.FC = () => {
   }, []);
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">
+    <div className="p-4">
+      <h2 className="text-2xl font-bold mb-4 text-center">
         Production Efficiency Dashboard
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
         {users.map((user) => (
           <UserEfficiencyCard
             key={`${user._id}-${user.firstName}-${user.lastName}`}
