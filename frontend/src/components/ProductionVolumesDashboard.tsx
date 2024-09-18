@@ -68,12 +68,14 @@ const ProductionVolumesDashboard: React.FC = () => {
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6">Production Volumes Dashboard</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {users.map((user) => (
-          <UserVolumeCard
-            key={`${user._id}-${user.firstName}-${user.lastName}`}
-            {...user}
-          />
-        ))}
+        {users
+          .filter((user) => user.itemsProcessed > 0)
+          .map((user) => (
+            <UserVolumeCard
+              key={`${user._id}-${user.firstName}-${user.lastName}`}
+              {...user}
+            />
+          ))}
       </div>
     </div>
   );

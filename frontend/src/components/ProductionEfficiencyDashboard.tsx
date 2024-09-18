@@ -83,12 +83,14 @@ const ProductionEfficiencyDashboard: React.FC = () => {
         Production Efficiency Dashboard
       </h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
-        {users.map((user) => (
-          <UserEfficiencyCard
-            key={`${user._id}-${user.firstName}-${user.lastName}`}
-            {...user}
-          />
-        ))}
+        {users
+          .filter((user) => user.efficiency > 0)
+          .map((user) => (
+            <UserEfficiencyCard
+              key={`${user._id}-${user.firstName}-${user.lastName}`}
+              {...user}
+            />
+          ))}
       </div>
     </div>
   );
