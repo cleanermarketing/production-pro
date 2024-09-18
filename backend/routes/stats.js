@@ -159,28 +159,48 @@ router.get("/today", async (req, res) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Calculate hours worked
     const timeclockEntries = await TimeclockEntry.find({
-      userId,
+      userId: userId,
       startTime: { $gte: today },
-    });
+    }).populate('jobTypeId');
 
-    let hoursWorked = 0;
+    let paidHours = 0;
+    let unpaidHours = 0;
     const now = new Date();
+
     timeclockEntries.forEach((entry) => {
       const endTime = entry.endTime || now;
-      hoursWorked += (endTime - entry.startTime) / (1000 * 60 * 60);
+      const duration = (endTime - entry.startTime) / (1000 * 60 * 60);
+      
+      if (entry.jobTypeId && entry.jobTypeId.paid) {
+        paidHours += duration;
+      } else {
+        unpaidHours += duration;
+      }
     });
 
-    // Get unique items pressed today
-    const uniqueItemsPressed = await ProductionEntry.distinct("barcode", {
-      userId,
-      createdAt: { $gte: today },
-    });
+    const productionEntries = await ProductionEntry.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+          createdAt: { $gte: today },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalPieces: { $sum: "$piecesPressed" },
+        },
+      },
+    ]);
+
+    const itemsPressed = productionEntries.length > 0 ? productionEntries[0].totalPieces : 0;
 
     res.json({
-      hoursWorked: Math.round(hoursWorked * 100) / 100,
-      itemsPressed: uniqueItemsPressed.length,
+      paidHours,
+      unpaidHours,
+      hoursWorked: paidHours + unpaidHours,
+      itemsPressed,
     });
   } catch (error) {
     console.error("Error fetching today's stats:", error);

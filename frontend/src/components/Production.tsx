@@ -27,7 +27,7 @@ const Production: React.FC = () => {
   const [actualPPOH, setActualPPOH] = useState(0);
   const [ppohDifference, setPpohDifference] = useState(0);
   const [efficiency, setEfficiency] = useState(0);
-  const [hoursWorked, setHoursWorked] = useState(0);
+  const [hoursWorked, setHoursWorked] = useState<{ paid: number; unpaid: number }>({ paid: 0, unpaid: 0 });
   const [backgroundColor, setBackgroundColor] = useState(
     "rgba(255, 255, 255, 0.9)"
   );
@@ -42,8 +42,16 @@ const Production: React.FC = () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/stats/today?userId=${user.id}`
       );
-      setHoursWorked(response.data.hoursWorked);
-      setItemsPressed(response.data.itemsPressed);
+      console.log("Today's summary response:", response.data);
+      setHoursWorked({
+        paid: response.data.paidHours || 0,
+        unpaid: response.data.unpaidHours || 0
+      });
+      setItemsPressed(response.data.itemsPressed || 0);
+      console.log("Hours worked set to:", {
+        paid: response.data.paidHours || 0,
+        unpaid: response.data.unpaidHours || 0
+      });
     } catch (error) {
       console.error("Error fetching today's summary:", error);
     }
@@ -112,6 +120,14 @@ const Production: React.FC = () => {
     }
   }, [user, isClockedIn]);
 
+  useEffect(() => {
+    if (user) {
+      fetchTodaySummary();
+      const interval = setInterval(fetchTodaySummary, 5000); // Update every minute
+      return () => clearInterval(interval);
+    }
+  }, [user]);
+
   const fetchCurrentJob = async (userId: string) => {
     try {
       console.log("Fetching current job for user:", userId);
@@ -176,18 +192,6 @@ const Production: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      fetchEfficiencyAndPPOH();
-      fetchTodaySummary();
-      const interval = setInterval(() => {
-        fetchEfficiencyAndPPOH();
-        fetchTodaySummary();
-      }, 30000); // Update every 30 seconds
-      return () => clearInterval(interval);
-    }
-  }, [user]);
-
   const handleBarcodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !currentJob || !barcode) {
@@ -223,9 +227,10 @@ const Production: React.FC = () => {
   const color = ppohVsGoal >= 0 ? "text-green-500" : "text-red-500";
 
   const TodaySummary: React.FC<{
-    hoursWorked: number;
+    hoursWorked: { paid: number; unpaid: number };
     itemsPressed: number;
   }> = ({ hoursWorked, itemsPressed }) => {
+    console.log("TodaySummary rendered with:", { hoursWorked, itemsPressed });
     return (
       <div className="bg-white shadow-lg rounded-lg p-6 flex flex-col h-full">
         <h2 className="text-xl font-semibold mb-4 text-center">
@@ -233,8 +238,15 @@ const Production: React.FC = () => {
         </h2>
         <div className="flex flex-col justify-between flex-grow">
           <div className="mb-4">
-            <p className="font-semibold">Hours Worked:</p>
-            <p className="text-2xl font-bold">{hoursWorked.toFixed(2)}</p>
+            <p className="font-semibold mb-2">Hours Worked:</p>
+            <div className="flex justify-between items-center">
+              <span>Paid:</span>
+              <span className="text-xl font-bold">{(hoursWorked?.paid || 0).toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span>Unpaid:</span>
+              <span className="text-xl font-bold">{(hoursWorked?.unpaid || 0).toFixed(2)}</span>
+            </div>
           </div>
           <div>
             <p className="font-semibold">Items Processed:</p>
@@ -322,22 +334,15 @@ const Production: React.FC = () => {
               {Math.round(ppohVsGoal)}
             </div>
           </div>
-          <div className="bg-white shadow-lg rounded-lg p-6">
-            <h2 className="text-xl font-semibold mb-4 text-center">PPOH</h2>
-            <table className="w-full">
-              <tbody>
-                <tr>
-                  <td>Goal PPOH:</td>
-                  <td className="text-right">
-                    {currentJob?.expectedPPOH || "N/A"}
-                  </td>
-                </tr>
-                <tr>
-                  <td>Actual PPOH:</td>
-                  <td className="text-right">{Math.round(actualPPOH)}</td>
-                </tr>
-              </tbody>
-            </table>
+          <div className="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center justify-center">
+            <div className="mb-4 text-center">
+              <p className="text-lg font-semibold">Goal PPOH</p>
+              <p className="text-4xl font-bold">{currentJob?.expectedPPOH || "N/A"}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-lg font-semibold">Actual PPOH</p>
+              <p className="text-4xl font-bold">{Math.round(actualPPOH)}</p>
+            </div>
           </div>
           <TodaySummary hoursWorked={hoursWorked} itemsPressed={itemsPressed} />
         </div>
