@@ -3,6 +3,10 @@ modules = ["nodejs-20"]
 
 [env]
 PORT = "3000"
+REACT_APP_API_URL = "https://$REPL_SLUG.$REPL_OWNER.repl.co:5000"
+REACT_APP_WS_API_URL = "wss://$REPL_SLUG.$REPL_OWNER.repl.co:5000"
+FRONTEND_URL = "https://$REPL_SLUG.$REPL_OWNER.repl.co"
+BACKEND_URL = "https://$REPL_SLUG.$REPL_OWNER.repl.co:5000"
 
 [[ports]]
 localPort = 3000
