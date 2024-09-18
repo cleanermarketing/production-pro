@@ -1,11 +1,8 @@
-import React from "react";
 import {
   BrowserRouter as Router,
   Route,
   Routes,
-  Navigate,
 } from "react-router-dom";
-import Header from "./components/Header";
 import { UserProvider } from "./UserContext";
 
 // Import your pages here

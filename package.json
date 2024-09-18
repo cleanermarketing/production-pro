@@ -81,6 +81,7 @@
     "qs": "^6.11.0",
     "range-parser": "^1.2.1",
     "raw-body": "^2.5.2",
+    "react-scripts": "^5.0.1",
     "safe-buffer": "^5.2.1",
     "safer-buffer": "^2.1.2",
     "semver": "^7.6.3",
