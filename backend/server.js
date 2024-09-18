@@ -1,11 +1,10 @@
+require('dotenv').config({ path: '../.env' });
 const express = require("express");
 const http = require("http");
 const WebSocket = require("ws");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const authRoutes = require("./routes/auth");
-require("dotenv").config();
-
 // Add this near the top of your file, after the require statements
 mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log('Connected to MongoDB'))
