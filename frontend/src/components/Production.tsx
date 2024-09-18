@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useUser } from "../UserContext";
 import EfficiencyMeter from "./EfficiencyMeter";
+import PPOHVsGoalMeter from "./PPOHVsGoalMeter";
 
 interface User {
   id: string;
@@ -14,6 +15,7 @@ interface JobType {
   _id: string;
   name: string;
   expectedPPOH: number;
+  paid: boolean;
 }
 
 const Production: React.FC = () => {
@@ -35,6 +37,8 @@ const Production: React.FC = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   const [sessionItemsProcessed, setSessionItemsProcessed] = useState(0);
+
+  const isOnPaidJob = currentJob?.paid ?? false;
 
   const fetchTodaySummary = async () => {
     if (!user) return;
@@ -294,7 +298,7 @@ const Production: React.FC = () => {
             <h2 className="text-xl font-semibold mb-4 text-center">
               Scan Items
             </h2>
-            {isClockedIn && currentJob ? (
+            {isClockedIn && isOnPaidJob ? (
               <form onSubmit={handleBarcodeSubmit}>
                 <input
                   type="text"
@@ -326,24 +330,31 @@ const Production: React.FC = () => {
               }
             />
           </div>
-          <SessionItemsProcessed itemsProcessed={sessionItemsProcessed} />
-          <div className="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center justify-center">
-            <h2 className="text-xl font-semibold mb-2">PPOH VS Goal</h2>
-            <p className="text-sm mb-2">This Session</p>
-            <div className={`text-6xl font-bold ${color}`}>
-              {Math.round(ppohVsGoal)}
+          {isClockedIn && isOnPaidJob && (
+            <div className="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center justify-center">
+              <h2 className="text-xl font-semibold mb-2">PPOH This Session</h2>
+              <PPOHVsGoalMeter
+                actualPPOH={actualPPOH}
+                goalPPOH={currentJob?.expectedPPOH || 1}
+                size={150}
+              />
             </div>
-          </div>
-          <div className="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center justify-center">
-            <div className="mb-4 text-center">
-              <p className="text-lg font-semibold">Goal PPOH</p>
-              <p className="text-4xl font-bold">{currentJob?.expectedPPOH || "N/A"}</p>
+          )}
+          {isClockedIn && isOnPaidJob && (
+            <div className="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center justify-center">
+              <div className="mb-4 text-center">
+                <p className="text-lg font-semibold">Goal PPOH</p>
+                <p className="text-4xl font-bold">{currentJob?.expectedPPOH || "N/A"}</p>
+              </div>
+              <div className="text-center">
+                <p className="text-lg font-semibold">Actual PPOH</p>
+                <p className="text-4xl font-bold">{Math.round(actualPPOH)}</p>
+              </div>
             </div>
-            <div className="text-center">
-              <p className="text-lg font-semibold">Actual PPOH</p>
-              <p className="text-4xl font-bold">{Math.round(actualPPOH)}</p>
-            </div>
-          </div>
+          )}
+          {isClockedIn && isOnPaidJob && (
+            <SessionItemsProcessed itemsProcessed={sessionItemsProcessed} />
+          )}
           <TodaySummary hoursWorked={hoursWorked} itemsPressed={itemsPressed} />
         </div>
       </div>
