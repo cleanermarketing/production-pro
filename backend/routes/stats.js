@@ -97,8 +97,6 @@ router.get("/efficiency/:userId", async (req, res) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    console.log(`Calculating efficiency for user: ${userId}, date: ${today}`);
-
     // Get total production value for today
     const productionEntries = await ProductionEntry.aggregate([
       {
@@ -115,40 +113,39 @@ router.get("/efficiency/:userId", async (req, res) => {
       },
     ]);
 
-    const totalProductionValue =
-      productionEntries.length > 0
-        ? productionEntries[0].totalProductionValue
-        : 0;
+    const totalProductionValue = productionEntries.length > 0
+      ? productionEntries[0].totalProductionValue
+      : 0;
 
-    console.log(`Total production value: ${totalProductionValue}`);
+    // Get all job types
+    const jobTypes = await JobType.find({});
+    const paidJobTypeIds = jobTypes
+      .filter(job => job.paid)
+      .map(job => job._id);
 
-    // Get total clocked in time for today
+    // Get timeclock entries for today
     const timeclockEntries = await TimeclockEntry.find({
       userId: userId,
       startTime: { $gte: today },
+      jobTypeId: { $in: paidJobTypeIds }
     });
 
-    let totalTimeInHours = 0;
+    let totalPaidTimeInHours = 0;
     const now = new Date();
 
     timeclockEntries.forEach((entry) => {
       const endTime = entry.endTime || now;
-      totalTimeInHours += (endTime - entry.startTime) / (1000 * 60 * 60);
+      totalPaidTimeInHours += (endTime - entry.startTime) / (1000 * 60 * 60);
     });
 
-    console.log(`Total time in hours: ${totalTimeInHours}`);
+    const efficiency = totalPaidTimeInHours > 0 
+      ? (totalProductionValue / totalPaidTimeInHours)
+      : 0;
 
-    const efficiency =
-      totalTimeInHours > 0 ? totalProductionValue / totalTimeInHours : 0;
-
-    console.log(`Calculated efficiency: ${efficiency}`);
-
-    res.json({ efficiency: Math.round(efficiency * 100) / 100 }); // Return with 2 decimal places
+    res.json({ efficiency: Math.round(efficiency * 100) / 100 });
   } catch (error) {
     console.error("Error calculating efficiency:", error);
-    res
-      .status(500)
-      .json({ message: "Error calculating efficiency", error: error.message });
+    res.status(500).json({ message: "Error calculating efficiency", error: error.message });
   }
 });
 

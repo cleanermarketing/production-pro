@@ -276,7 +276,7 @@ const Sidebar: React.FC = () => {
             ) : (
               <>
                 <FaChevronLeft className="inline-block mr-3" />
-                Minify Menu
+                Hide Menu
               </>
             )}
           </button>

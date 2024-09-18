@@ -28,7 +28,7 @@ const UserEfficiencyCard: React.FC<User> = ({
           isClockedIn ? "bg-green-500 text-white" : "bg-red-500 text-white"
         }`}
       >
-        {isClockedIn ? "Currently Clocked In" : "Not Currently Clocked In"}
+        {isClockedIn ? "Clocked In" : "Not Clocked In"}
       </div>
       <EfficiencyMeter
         efficiency={roundedEfficiency}
