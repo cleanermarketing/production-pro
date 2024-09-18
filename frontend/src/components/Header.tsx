@@ -195,6 +195,7 @@ const Header: React.FC = () => {
         isOpen={showClockOutModal}
         onClose={() => setShowClockOutModal(false)}
         onConfirm={handleClockOutConfirm}
+        className="z-50"
       />
     </header>
   );

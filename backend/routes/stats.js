@@ -402,4 +402,22 @@ router.get("/users/today-volumes", async (req, res) => {
   }
 });
 
+router.get("/items-pressed/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const itemsPressed = await ProductionEntry.distinct("barcode", {
+      userId: userId,
+      createdAt: { $gte: today },
+    });
+
+    res.json({ itemsPressed: itemsPressed.length });
+  } catch (error) {
+    console.error("Error fetching items pressed:", error);
+    res.status(500).json({ message: "Error fetching items pressed" });
+  }
+});
+
 module.exports = router;

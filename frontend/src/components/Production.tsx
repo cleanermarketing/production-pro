@@ -51,7 +51,6 @@ const Production: React.FC = () => {
         paid: response.data.paidHours || 0,
         unpaid: response.data.unpaidHours || 0
       });
-      setItemsPressed(response.data.itemsPressed || 0);
       console.log("Hours worked set to:", {
         paid: response.data.paidHours || 0,
         unpaid: response.data.unpaidHours || 0
@@ -162,25 +161,28 @@ const Production: React.FC = () => {
   const fetchEfficiencyAndPPOH = async () => {
     if (!user) return;
     try {
-      const [efficiencyResponse, ppohResponse] = await Promise.all([
-        axios.get(
-          `${process.env.REACT_APP_API_URL}/api/stats/efficiency/${user.id}`
-        ),
-        axios.get(
-          `${process.env.REACT_APP_API_URL}/api/timeclock/session-stats/${user.id}`
-        ),
+      const [efficiencyResponse, ppohResponse, itemsPressedResponse] = await Promise.all([
+        axios.get(`${process.env.REACT_APP_API_URL}/api/stats/efficiency/${user.id}`),
+        axios.get(`${process.env.REACT_APP_API_URL}/api/timeclock/session-stats/${user.id}`),
+        axios.get(`${process.env.REACT_APP_API_URL}/api/stats/items-pressed/${user.id}`),
       ]);
+
       setEfficiency(Math.round(efficiencyResponse.data.efficiency));
+      
       const { sessionItemsPressed, sessionHours } = ppohResponse.data;
       setSessionItemsPressed(sessionItemsPressed);
       setSessionHours(sessionHours);
+      
       if (sessionHours > 0) {
         const calculatedPPOH = sessionItemsPressed / sessionHours;
         setActualPPOH(calculatedPPOH);
         setPpohDifference(calculatedPPOH - (currentJob?.expectedPPOH || 0));
       }
+      
+      setItemsPressed(itemsPressedResponse.data.itemsPressed);
     } catch (error) {
       console.error("Error fetching efficiency and PPOH:", error);
+      // You might want to set some default values or show an error message to the user
     }
   };
 

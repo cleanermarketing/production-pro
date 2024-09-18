@@ -4,6 +4,7 @@ interface ClockOutReasonModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (reason: string) => void;
+  className?: string;
 }
 
 const clockOutReasons = [
@@ -17,6 +18,7 @@ const ClockOutReasonModal: React.FC<ClockOutReasonModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
+  className,
 }) => {
   const [selectedReason, setSelectedReason] = useState("");
 
@@ -29,7 +31,7 @@ const ClockOutReasonModal: React.FC<ClockOutReasonModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
+    <div className={`fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center ${className}`}>
       <div className="relative p-5 border w-96 shadow-lg rounded-md bg-white">
         <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
           Clock Out Reason
