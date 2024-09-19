@@ -109,9 +109,9 @@
     "test": "craco test",
     "eject": "react-scripts eject",
     "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
-    "start:backend": "cd backend && node set-env.js && PORT=5000 npm start",
-    "start:frontend": "cd frontend && node set-env.js && PORT=3000 npm start",
-    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install"
+    "start:backend": "cd backend && PORT=5000 npm start",
+    "start:frontend": "cd frontend && PORT=3000 npm start",
+    "install:all": "npm install && cd frontend && npm install"
   },
   "keywords": [],
   "author": "",
