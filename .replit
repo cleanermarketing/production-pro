@@ -1,5 +1,5 @@
 run = "npm run start"
-modules = ["nodejs-20"]
+modules = ["nodejs-20", "web"]
 
 [env]
 PORT = "3000"
@@ -8,10 +8,9 @@ PORT = "3000"
 localPort = 3000
 externalPort = 80
 
-[[ports]]
-localPort = 5000
-externalPort = 5000
-
 [deployment]
 run = ["sh", "-c", "npm run start"]
-deploymentTarget = "cloudrun"
+deploymentTarget = "gce"
+
+[nix]
+channel = "stable-24_05"
